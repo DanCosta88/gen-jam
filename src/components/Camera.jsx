@@ -7,18 +7,18 @@ function Camera() {
     // Get player position from global window object
     const playerPosition = window.playerPosition || { x: 0, y: 2, z: 0 }
 
-    // Side-scrolling camera - segue solo l'asse X del player
-    // Mantiene una posizione fissa su Y e Z per un effetto 2D
+    // Side-scrolling camera - only follows player's X axis
+    // Maintains fixed Y and Z position for 2D effect
     const targetX = playerPosition.x
-    const targetY = 5 // Altezza fissa della camera
-    const targetZ = 15 // Distanza fissa dalla scena
+    const targetY = 5 // Fixed camera height
+    const targetZ = 15 // Fixed distance from scene
 
-    // Smooth camera follow (solo sull'asse X)
+    // Smooth camera follow (X axis only)
     camera.position.x += (targetX - camera.position.x) * 0.1
     camera.position.y += (targetY - camera.position.y) * 0.05
     camera.position.z = targetZ
 
-    // La camera guarda sempre il player
+    // Camera always looks at the player
     camera.lookAt(playerPosition.x, playerPosition.y + 2, 0)
   })
 

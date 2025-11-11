@@ -4,10 +4,12 @@ import Level from './Level'
 import Player from './Player'
 import Camera from './Camera'
 import Bullet from './Bullet'
+import Boss from './Boss'
+import BossProjectile from './BossProjectile'
 import { useGame } from '../store/useGame'
 
 function Game() {
-  const { bullets } = useGame()
+  const { bullets, bossProjectiles } = useGame()
 
   return (
     <Canvas
@@ -27,14 +29,25 @@ function Game() {
       {/* Game components */}
       <Player />
       <Level />
+      <Boss />
       
-      {/* Bullets */}
+      {/* Player Bullets */}
       {bullets.map((bullet) => (
         <Bullet
           key={bullet.id}
           id={bullet.id}
           position={bullet.position}
           direction={bullet.direction}
+        />
+      ))}
+      
+      {/* Boss Projectiles */}
+      {bossProjectiles.map((projectile) => (
+        <BossProjectile
+          key={projectile.id}
+          id={projectile.id}
+          position={projectile.position}
+          direction={projectile.direction}
         />
       ))}
       

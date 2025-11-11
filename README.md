@@ -8,6 +8,9 @@ Un platform game side-scroller 2D/3D in stile Super Mario realizzato con **React
 
 ## 🎯 Caratteristiche
 
+- **Selezione Personaggi**: 5 personaggi unici tra cui scegliere (Aura, Danilo, Andre, Arun, Yashodh)
+- **Animazioni Fluide**: Transizioni animate con Framer Motion
+- **Routing Dinamico**: Sistema di navigazione tra menu e gioco
 - **Grafica 2D/3D**: Background 2D panoramico con elementi 3D interattivi
 - **Fisica realistica**: Sistema di gravità e collisioni con piattaforme
 - **Controlli completi**: Movimento, salto e combattimento
@@ -16,6 +19,7 @@ Un platform game side-scroller 2D/3D in stile Super Mario realizzato con **React
 - **Side-scrolling**: Camera che segue il personaggio orizzontalmente
 - **Livelli estesi**: Sistema di piattaforme progressivo con oltre 15 piattaforme
 - **Background dinamico**: Montagne, nuvole e sole
+- **Personalizzazione**: Ogni personaggio ha un colore unico
 
 ## 🚀 Installazione
 
@@ -61,24 +65,26 @@ npm run dev
 gen-jam/
 ├── src/
 │   ├── components/
-│   │   ├── Game.jsx          # Componente principale del gioco con Canvas
-│   │   ├── Player.jsx         # Personaggio giocabile con fisica
-│   │   ├── Platform.jsx       # Componente singola piattaforma
-│   │   ├── Level.jsx          # Livello con tutte le piattaforme
-│   │   └── Camera.jsx         # Camera che segue il player
+│   │   ├── Game.jsx           # Componente principale del gioco con Canvas
+│   │   ├── Player.jsx          # Personaggio giocabile con fisica e shooting
+│   │   ├── Bullet.jsx          # Proiettili sparati dal player
+│   │   ├── Platform.jsx        # Componente singola piattaforma
+│   │   ├── Level.jsx           # Livello con tutte le piattaforme
+│   │   ├── Background.jsx      # Background 2D con montagne, nuvole e sole
+│   │   └── Camera.jsx          # Camera side-scrolling
 │   ├── hooks/
-│   │   └── useKeyboard.js     # Hook per gestire input tastiera
+│   │   └── useKeyboard.js      # Hook per gestire input tastiera (WASD, F)
 │   ├── store/
-│   │   └── useGame.js         # Store Zustand per stato del gioco
+│   │   └── useGame.js          # Store Zustand per stato (HP, score, bullets)
 │   ├── styles/
-│   │   └── index.css          # Stili globali
-│   ├── App.jsx                # Componente principale React
-│   └── main.jsx               # Entry point
-├── index.html                 # HTML template
-├── vite.config.js            # Configurazione Vite
-├── package.json              # Dipendenze
-├── .gitignore               # File ignorati da Git
-└── README.md                # Questo file
+│   │   └── index.css           # Stili globali e HUD
+│   ├── App.jsx                 # Componente principale con HUD
+│   └── main.jsx                # Entry point
+├── index.html                  # HTML template
+├── vite.config.js             # Configurazione Vite
+├── package.json               # Dipendenze
+├── .gitignore                # File ignorati da Git
+└── README.md                 # Questo file
 ```
 
 ## 🎨 Personalizzazione
@@ -98,15 +104,23 @@ const levelData = [
 ]
 ```
 
-### Modificare la fisica
+### Modificare la fisica e il sistema di sparo
 
-I parametri della fisica sono definiti in `src/components/Player.jsx`:
+I parametri della fisica e del combattimento sono definiti in `src/components/Player.jsx`:
 
 ```javascript
-const GRAVITY = -0.03      // Forza di gravità
-const JUMP_FORCE = 0.5     // Forza del salto
-const MOVE_SPEED = 0.15    // Velocità movimento
-const PLAYER_SIZE = 0.8    // Dimensione del player
+const GRAVITY = -0.03          // Forza di gravità
+const JUMP_FORCE = 0.5         // Forza del salto
+const MOVE_SPEED = 0.15        // Velocità movimento
+const PLAYER_SIZE = 0.8        // Dimensione del player
+const SHOOT_COOLDOWN = 300     // Millisecondi tra uno sparo e l'altro
+```
+
+Per modificare la velocità dei proiettili, edita `src/components/Bullet.jsx`:
+
+```javascript
+const BULLET_SPEED = 0.5       // Velocità proiettile
+const BULLET_LIFETIME = 3000   // Durata vita proiettile (ms)
 ```
 
 ### Personalizzare i colori
@@ -147,16 +161,23 @@ npm run preview
 
 Idee per espandere il gioco:
 
-- [ ] Aggiungere nemici
+- [x] Sistema di sparo con proiettili
+- [x] Barra della vita HP
+- [x] Background 2D panoramico
+- [x] Side-scrolling camera
+- [ ] Aggiungere nemici che si muovono
+- [ ] Collisione proiettili con nemici
 - [ ] Sistema di checkpoint
 - [ ] Collectables (monete, power-up)
-- [ ] Più livelli
-- [ ] Animazioni del personaggio
+- [ ] Più livelli selezionabili
+- [ ] Animazioni del personaggio (sprite)
 - [ ] Effetti sonori e musica
-- [ ] Modalità multiplayer
-- [ ] Classifica punteggi
+- [ ] Modalità multiplayer locale
+- [ ] Classifica punteggi (localStorage)
 - [ ] Mobile controls (touch)
 - [ ] Particelle ed effetti speciali
+- [ ] Boss fights
+- [ ] Power-ups (double jump, rapid fire, shield)
 
 ## 🐛 Troubleshooting
 

@@ -2,23 +2,22 @@ import { useRef, useState, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useKeyboard } from '../hooks/useKeyboard'
 import { useGame } from '../store/useGame'
-import * as THREE from 'three'
 
-const GRAVITY = -0.03
-const JUMP_FORCE = 0.5
+const GRAVITY = -0.015  // Reduced gravity for slower, longer jumps
+const JUMP_FORCE = 0.35  // Reduced jump force for more controlled jumps
 const MOVE_SPEED = 0.15
 const PLAYER_SIZE = 0.8
-const SHOOT_COOLDOWN = 300 // ms tra uno sparo e l'altro
+const SHOOT_COOLDOWN = 300 // ms between shots
 
 function Player() {
   const meshRef = useRef()
   const keys = useKeyboard()
-  const { takeDamage, gameOver, addBullet } = useGame()
+  const { takeDamage, gameOver, addBullet, selectedCharacter, isPaused, collectCoin, collectedCoins } = useGame()
   
   const [position, setPosition] = useState([0, 2, 0])
   const [velocity, setVelocity] = useState([0, 0, 0])
   const [isOnGround, setIsOnGround] = useState(false)
-  const [facingDirection, setFacingDirection] = useState(1) // 1 = destra, -1 = sinistra
+  const [facingDirection, setFacingDirection] = useState(1) // 1 = right, -1 = left
   const lastShootTime = useRef(0)
 
   useEffect(() => {
@@ -27,7 +26,7 @@ function Player() {
   }, [position])
 
   useFrame(() => {
-    if (gameOver) return
+    if (gameOver || isPaused) return
 
     const [x, y, z] = position
     let [vx, vy, vz] = velocity
@@ -97,9 +96,52 @@ function Player() {
 
     setIsOnGround(onGround)
 
+    // Coin collision detection
+    const coins = window.coinsData || []
+    const COIN_RADIUS = 0.3
+    
+    for (let i = 0; i < coins.length; i++) {
+      const coinId = `coin-${i}`
+      // Skip if already collected
+      if (collectedCoins.includes(coinId)) continue
+      
+      const [cx, cy, cz] = coins[i]
+      const distance = Math.sqrt(
+        Math.pow(newX - cx, 2) +
+        Math.pow(newY - cy, 2) +
+        Math.pow(newZ - cz, 2)
+      )
+      
+      // Collect coin if close enough
+      if (distance < PLAYER_SIZE / 2 + COIN_RADIUS) {
+        collectCoin(coinId)
+      }
+    }
+
+    // Boss projectile collision detection
+    const bossProjectiles = window.bossProjectilesPositions || {}
+    const PROJECTILE_RADIUS = 0.25
+    const DAMAGE_PER_HIT = 10
+    
+    for (const projectileId in bossProjectiles) {
+      const proj = bossProjectiles[projectileId]
+      const distance = Math.sqrt(
+        Math.pow(newX - proj.x, 2) +
+        Math.pow(newY - proj.y, 2) +
+        Math.pow(newZ - proj.z, 2)
+      )
+      
+      // Check collision with projectile
+      if (distance < PLAYER_SIZE / 2 + PROJECTILE_RADIUS) {
+        takeDamage(DAMAGE_PER_HIT)
+        // Remove the projectile from tracking
+        delete window.bossProjectilesPositions[projectileId]
+      }
+    }
+
     // Death condition (fall below level)
     if (newY < -10) {
-      takeDamage(50) // Perde metà vita cadendo
+      takeDamage(50) // Lose half health when falling
       newX = 0
       newY = 5
       newZ = 0
@@ -118,10 +160,13 @@ function Player() {
     }
   })
 
+  // Use character color or default red
+  const playerColor = selectedCharacter ? selectedCharacter.color : '#ff0000'
+
   return (
-    <mesh ref={meshRef} castShadow data-player position={position}>
+    <mesh ref={meshRef} castShadow position={position}>
       <boxGeometry args={[PLAYER_SIZE, PLAYER_SIZE, PLAYER_SIZE]} />
-      <meshStandardMaterial color="#ff0000" />
+      <meshStandardMaterial color={playerColor} />
     </mesh>
   )
 }

@@ -1,43 +1,53 @@
 import { useEffect } from 'react'
 import Platform from './Platform'
 import Background from './Background'
+import Coin from './Coin'
+import { useGame } from '../store/useGame'
 
-// Level data - platforms configuration per side-scrolling 2D
+// Level data - platforms configuration for side-scrolling 2D (simplified and closer)
 const levelData = [
-  // Ground platforms - base lungo
-  { position: [0, 0, 0], size: [15, 0.5, 3], color: '#228B22' },
-  { position: [20, 0, 0], size: [12, 0.5, 3], color: '#228B22' },
-  { position: [38, 0, 0], size: [10, 0.5, 3], color: '#228B22' },
-  { position: [54, 0, 0], size: [15, 0.5, 3], color: '#228B22' },
+  // Ground platforms - closer together
+  { position: [0, 0, 0], size: [18, 0.5, 3], color: '#228B22' },
+  { position: [20, 0, 0], size: [15, 0.5, 3], color: '#228B22' },
+  { position: [37, 0, 0], size: [12, 0.5, 3], color: '#228B22' },
+  { position: [51, 0, 0], size: [18, 0.5, 3], color: '#228B22' },
   
-  // First level platforms - piattaforme medie
-  { position: [10, 2.5, 0], size: [4, 0.5, 2.5], color: '#8B4513' },
-  { position: [17, 4, 0], size: [4, 0.5, 2.5], color: '#8B4513' },
-  { position: [25, 5.5, 0], size: [4, 0.5, 2.5], color: '#8B4513' },
+  // First level platforms - closer and easier jumps
+  { position: [10, 2.5, 0], size: [5, 0.5, 2.5], color: '#8B4513' },
+  { position: [16, 3.5, 0], size: [5, 0.5, 2.5], color: '#8B4513' },
+  { position: [22, 4.5, 0], size: [5, 0.5, 2.5], color: '#8B4513' },
   
-  // Second level platforms - piattaforme alte
-  { position: [32, 7, 0], size: [5, 0.5, 2.5], color: '#8B4513' },
-  { position: [42, 8.5, 0], size: [4, 0.5, 2.5], color: '#8B4513' },
-  { position: [50, 10, 0], size: [4, 0.5, 2.5], color: '#8B4513' },
+  // Second level platforms - reduced gaps
+  { position: [29, 6, 0], size: [5, 0.5, 2.5], color: '#8B4513' },
+  { position: [36, 7, 0], size: [5, 0.5, 2.5], color: '#8B4513' },
+  { position: [43, 8, 0], size: [5, 0.5, 2.5], color: '#8B4513' },
   
-  // Challenge platforms - piattaforme strette
-  { position: [58, 11, 0], size: [2.5, 0.5, 2], color: '#FF6347' },
-  { position: [63, 10, 0], size: [2.5, 0.5, 2], color: '#FF6347' },
-  { position: [68, 9, 0], size: [2.5, 0.5, 2], color: '#FF6347' },
-  { position: [73, 8, 0], size: [2.5, 0.5, 2], color: '#FF6347' },
+  // Challenge platforms - closer together
+  { position: [50, 9, 0], size: [3, 0.5, 2], color: '#FF6347' },
+  { position: [55, 9, 0], size: [3, 0.5, 2], color: '#FF6347' },
+  { position: [60, 8.5, 0], size: [3, 0.5, 2], color: '#FF6347' },
+  { position: [65, 8, 0], size: [3, 0.5, 2], color: '#FF6347' },
   
   // Goal platform
-  { position: [80, 7, 0], size: [8, 0.5, 3], color: '#FFD700' },
-  
-  // Extra platforms per varietà
-  { position: [90, 5, 0], size: [6, 0.5, 2.5], color: '#8B4513' },
-  { position: [100, 3, 0], size: [8, 0.5, 3], color: '#228B22' },
+  { position: [71, 7, 0], size: [10, 0.5, 3], color: '#FFD700' },
+]
+
+// Coin positions scattered around the level (adjusted for new layout)
+const coinPositions = [
+  [5, 2, 0], [12, 3.5, 0], [18, 4.5, 0], [24, 5.5, 0],
+  [31, 7, 0], [38, 8, 0], [45, 9, 0], [52, 10, 0],
+  [57, 10, 0], [62, 9.5, 0], [67, 9, 0], [73, 8, 0],
+  // Extra coins at ground level
+  [8, 1.5, 0], [28, 1.5, 0], [48, 1.5, 0], [68, 1.5, 0]
 ]
 
 function Level() {
+  const { collectedCoins } = useGame()
+  
   useEffect(() => {
     // Store level data globally for collision detection
     window.platformsData = levelData
+    window.coinsData = coinPositions
   }, [])
 
   return (
@@ -68,6 +78,14 @@ function Level() {
           <meshStandardMaterial color="#228B22" />
         </mesh>
       ))}
+      
+      {/* Coins */}
+      {coinPositions.map((position, index) => {
+        const coinId = `coin-${index}`
+        // Only render coin if not collected
+        if (collectedCoins.includes(coinId)) return null
+        return <Coin key={coinId} id={coinId} position={position} />
+      })}
     </group>
   )
 }

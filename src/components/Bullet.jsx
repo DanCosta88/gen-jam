@@ -1,9 +1,9 @@
-import { useRef, useEffect } from 'react'
+import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useGame } from '../store/useGame'
 
 const BULLET_SPEED = 0.5
-const BULLET_LIFETIME = 3000 // 3 secondi
+const BULLET_LIFETIME = 3000 // 3 seconds
 
 function Bullet({ id, position, direction }) {
   const meshRef = useRef()
@@ -13,10 +13,10 @@ function Bullet({ id, position, direction }) {
   useFrame(() => {
     if (!meshRef.current) return
 
-    // Movimento del proiettile
+    // Bullet movement
     meshRef.current.position.x += direction * BULLET_SPEED
 
-    // Rimuovi il proiettile se è fuori schermo o se è scaduto il tempo
+    // Remove bullet if out of bounds or lifetime expired
     if (
       Math.abs(meshRef.current.position.x) > 100 ||
       Date.now() - spawnTime.current > BULLET_LIFETIME

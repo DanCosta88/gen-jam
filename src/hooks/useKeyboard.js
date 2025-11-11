@@ -5,7 +5,8 @@ export const useKeyboard = () => {
     left: false,
     right: false,
     jump: false,
-    shoot: false
+    shoot: false,
+    escape: false
   })
 
   useEffect(() => {
@@ -26,6 +27,9 @@ export const useKeyboard = () => {
           break
         case 'KeyF':
           setKeys((prev) => ({ ...prev, shoot: true }))
+          break
+        case 'Escape':
+          setKeys((prev) => ({ ...prev, escape: true }))
           break
         default:
           break
@@ -49,6 +53,9 @@ export const useKeyboard = () => {
           break
         case 'KeyF':
           setKeys((prev) => ({ ...prev, shoot: false }))
+          break
+        case 'Escape':
+          setKeys((prev) => ({ ...prev, escape: false }))
           break
         default:
           break
