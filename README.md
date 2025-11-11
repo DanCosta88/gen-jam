@@ -1,6 +1,6 @@
 # Platform Game - Gen Jam 🎮
 
-Un platform game 3D in stile Super Mario realizzato con **React**, **Three.js** e **react-three-fiber**.
+Un platform game side-scroller 2D/3D in stile Super Mario realizzato con **React**, **Three.js** e **react-three-fiber**.
 
 ![Platform Game](https://img.shields.io/badge/React-18.2-blue)
 ![Three.js](https://img.shields.io/badge/Three.js-0.158-green)
@@ -8,12 +8,14 @@ Un platform game 3D in stile Super Mario realizzato con **React**, **Three.js** 
 
 ## 🎯 Caratteristiche
 
-- **Grafica 3D**: Realizzata con Three.js e react-three-fiber
-- **Fisica realistica**: Sistema di gravità e collisioni
-- **Controlli intuitivi**: Movimento con tastiera
-- **Livelli**: Sistema di piattaforme con difficoltà crescente
-- **Sistema di vite**: Game over con possibilità di rigioco
-- **Camera dinamica**: Segue il personaggio durante il movimento
+- **Grafica 2D/3D**: Background 2D panoramico con elementi 3D interattivi
+- **Fisica realistica**: Sistema di gravità e collisioni con piattaforme
+- **Controlli completi**: Movimento, salto e combattimento
+- **Sistema di sparo**: Possibilità di sparare proiettili (tasto F)
+- **Barra della vita**: Sistema HP con barra visuale nell'HUD
+- **Side-scrolling**: Camera che segue il personaggio orizzontalmente
+- **Livelli estesi**: Sistema di piattaforme progressivo con oltre 15 piattaforme
+- **Background dinamico**: Montagne, nuvole e sole
 
 ## 🚀 Installazione
 
@@ -48,9 +50,10 @@ npm run dev
 
 | Tasto | Azione |
 |-------|--------|
-| ← / A | Muovi a sinistra |
-| → / D | Muovi a destra |
-| SPAZIO / W / ↑ | Salta |
+| A / ← | Muovi a sinistra |
+| D / → | Muovi a destra |
+| W / SPAZIO / ↑ | Salta |
+| F | Spara proiettili |
 
 ## 📁 Struttura del Progetto
 
