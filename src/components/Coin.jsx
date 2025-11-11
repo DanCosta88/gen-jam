@@ -17,14 +17,15 @@ function Coin({ position, id }) {
 
   return (
     <mesh ref={meshRef} position={position} userData={{ type: 'coin', id }}>
-      {/* Coin shape - cylinder */}
-      <cylinderGeometry args={[0.3, 0.3, 0.1, 16]} />
+      {/* Coin shape - 2D circle */}
+      <circleGeometry args={[0.3, 32]} />
       <meshStandardMaterial 
         color="#FFD700" 
         metalness={0.8}
         roughness={0.2}
         emissive="#FFA500"
         emissiveIntensity={0.3}
+        side={2}
       />
     </mesh>
   )

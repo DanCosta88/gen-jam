@@ -12,7 +12,7 @@ const SHOOT_COOLDOWN = 300 // ms between shots
 function Player() {
   const meshRef = useRef()
   const keys = useKeyboard()
-  const { takeDamage, gameOver, addBullet, selectedCharacter, isPaused, collectCoin, collectedCoins } = useGame()
+  const { takeDamage, gameOver, addBullet, selectedCharacter, isPaused, collectCoin, collectedCoins, reachCheckpoint, reachedCheckpoints, showDialog } = useGame()
   
   const [position, setPosition] = useState([0, 2, 0])
   const [velocity, setVelocity] = useState([0, 0, 0])
@@ -139,6 +139,30 @@ function Player() {
       }
     }
 
+    // Checkpoint collision detection
+    const checkpoints = window.checkpointsData || []
+    const CHECKPOINT_RADIUS = 0.8
+    
+    for (const checkpoint of checkpoints) {
+      const checkpointId = checkpoint.id
+      // Skip if already reached
+      if (reachedCheckpoints.includes(checkpointId)) continue
+      
+      const [cx, cy, cz] = checkpoint.position
+      const distance = Math.sqrt(
+        Math.pow(newX - cx, 2) +
+        Math.pow(newY - cy, 2) +
+        Math.pow(newZ - cz, 2)
+      )
+      
+      // Check collision with checkpoint
+      if (distance < PLAYER_SIZE / 2 + CHECKPOINT_RADIUS) {
+        reachCheckpoint(checkpointId)
+        // Show dialog
+        showDialog(checkpoint.dialog)
+      }
+    }
+
     // Death condition (fall below level)
     if (newY < -10) {
       takeDamage(50) // Lose half health when falling
@@ -164,10 +188,27 @@ function Player() {
   const playerColor = selectedCharacter ? selectedCharacter.color : '#ff0000'
 
   return (
-    <mesh ref={meshRef} castShadow position={position}>
-      <boxGeometry args={[PLAYER_SIZE, PLAYER_SIZE, PLAYER_SIZE]} />
-      <meshStandardMaterial color={playerColor} />
-    </mesh>
+    <group ref={meshRef} position={position}>
+      {/* Main body - 2D plane */}
+      <mesh castShadow>
+        <planeGeometry args={[PLAYER_SIZE, PLAYER_SIZE]} />
+        <meshStandardMaterial color={playerColor} side={2} />
+      </mesh>
+      
+      {/* Character face/details */}
+      <mesh position={[0, 0.15, 0.01]}>
+        <circleGeometry args={[0.1, 16]} />
+        <meshStandardMaterial color="#000000" />
+      </mesh>
+      <mesh position={[-0.15, 0.15, 0.01]}>
+        <circleGeometry args={[0.08, 16]} />
+        <meshStandardMaterial color="#FFFFFF" />
+      </mesh>
+      <mesh position={[0.15, 0.15, 0.01]}>
+        <circleGeometry args={[0.08, 16]} />
+        <meshStandardMaterial color="#FFFFFF" />
+      </mesh>
+    </group>
   )
 }
 

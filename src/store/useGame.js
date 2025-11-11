@@ -18,6 +18,12 @@ export const useGame = create((set) => ({
   bullets: [],
   bossProjectiles: [],
   collectedCoins: [],
+  reachedCheckpoints: [],
+  currentDialog: null,
+  isDialogOpen: false,
+  bossHealth: 3,
+  bossMaxHealth: 3,
+  bossDefeated: false,
   selectedCharacter: null,
   
   selectCharacter: (character) => set({ selectedCharacter: character }),
@@ -32,6 +38,21 @@ export const useGame = create((set) => ({
     collectedCoins: [...state.collectedCoins, coinId],
     score: state.score + 5
   })),
+  
+  reachCheckpoint: (checkpointId) => set((state) => ({
+    reachedCheckpoints: [...state.reachedCheckpoints, checkpointId]
+  })),
+  
+  showDialog: (dialogData) => set({
+    currentDialog: dialogData,
+    isDialogOpen: true,
+    isPaused: true
+  }),
+  
+  closeDialog: () => set({
+    isDialogOpen: false,
+    isPaused: false
+  }),
   
   takeDamage: (damage) => set((state) => {
     const newHealth = Math.max(0, state.health - damage)
@@ -61,6 +82,15 @@ export const useGame = create((set) => ({
     bossProjectiles: state.bossProjectiles.filter(p => p.id !== id)
   })),
   
+  damageBoss: () => set((state) => {
+    const newHealth = Math.max(0, state.bossHealth - 1)
+    return {
+      bossHealth: newHealth,
+      bossDefeated: newHealth <= 0,
+      score: newHealth <= 0 ? state.score + 100 : state.score + 10 // Bonus for killing boss
+    }
+  }),
+  
   resetGame: () => set({
     score: 0,
     health: 100,
@@ -68,6 +98,11 @@ export const useGame = create((set) => ({
     bullets: [],
     bossProjectiles: [],
     collectedCoins: [],
+    reachedCheckpoints: [],
+    currentDialog: null,
+    isDialogOpen: false,
+    bossHealth: 3,
+    bossDefeated: false,
     isPaused: false
   })
 }))

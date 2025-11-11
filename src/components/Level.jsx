@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import Platform from './Platform'
 import Background from './Background'
 import Coin from './Coin'
+import Checkpoint from './Checkpoint'
 import { useGame } from '../store/useGame'
 
 // Level data - platforms configuration for side-scrolling 2D (simplified and closer)
@@ -41,13 +42,45 @@ const coinPositions = [
   [8, 1.5, 0], [28, 1.5, 0], [48, 1.5, 0], [68, 1.5, 0]
 ]
 
+// Checkpoints with dialog data
+const checkpointsData = [
+  {
+    id: 'checkpoint-1',
+    position: [2, 1.5, 0],  // At spawn point
+    dialog: {
+      characterName: 'Guide',
+      dialogText: 'Welcome to the adventure! You\'re a founder in this messy market! You need to find a way to stand out and be successful!',
+      characterImage: null
+    }
+  },
+  {
+    id: 'checkpoint-2',
+    position: [45, 9, 0],
+    dialog: {
+      characterName: 'Warning',
+      dialogText: 'Beware! A powerful investor guards the end of this path. You can shoot him to get his attention, with your ideas!',
+      characterImage: null
+    }
+  },
+  {
+    id: 'checkpoint-3',
+    position: [70, 8, 0],
+    dialog: {
+      characterName: 'Final Challenge',
+      dialogText: 'You made it! You can now pitch your idea to the investor!',
+      characterImage: null
+    }
+  }
+]
+
 function Level() {
-  const { collectedCoins } = useGame()
+  const { collectedCoins, reachedCheckpoints } = useGame()
   
   useEffect(() => {
     // Store level data globally for collision detection
     window.platformsData = levelData
     window.coinsData = coinPositions
+    window.checkpointsData = checkpointsData
   }, [])
 
   return (
@@ -85,6 +118,19 @@ function Level() {
         // Only render coin if not collected
         if (collectedCoins.includes(coinId)) return null
         return <Coin key={coinId} id={coinId} position={position} />
+      })}
+      
+      {/* Checkpoints */}
+      {checkpointsData.map((checkpoint) => {
+        const isActive = !reachedCheckpoints.includes(checkpoint.id)
+        return (
+          <Checkpoint
+            key={checkpoint.id}
+            id={checkpoint.id}
+            position={checkpoint.position}
+            active={isActive}
+          />
+        )
       })}
     </group>
   )

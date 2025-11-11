@@ -8,19 +8,35 @@ const BOSS_POSITION = [75, 9, 0] // At the end of the map
 
 function Boss() {
   const meshRef = useRef()
-  const { addBossProjectile, isPaused } = useGame()
+  const { addBossProjectile, isPaused, bossDefeated, bossHealth } = useGame()
   const lastShootTime = useRef(0)
+  const prevBossHealth = useRef(3)
   const [bossColor, setBossColor] = useState('#8B008B') // Dark magenta
+
+  // Flash when taking damage
+  useEffect(() => {
+    if (bossHealth < prevBossHealth.current) {
+      setBossColor('#FFFFFF')
+      setTimeout(() => setBossColor('#8B008B'), 150)
+    }
+    prevBossHealth.current = bossHealth
+  }, [bossHealth])
 
   useEffect(() => {
     // Initialize boss projectiles positions tracker
     if (!window.bossProjectilesPositions) {
       window.bossProjectilesPositions = {}
     }
+    
+    // Store boss position and size for collision detection
+    window.bossData = {
+      position: BOSS_POSITION,
+      size: BOSS_SIZE
+    }
   }, [])
 
   useFrame(() => {
-    if (isPaused) return
+    if (isPaused || bossDefeated) return
 
     const now = Date.now()
     
@@ -63,35 +79,51 @@ function Boss() {
     // Slight floating animation
     if (meshRef.current) {
       meshRef.current.position.y = BOSS_POSITION[1] + Math.sin(Date.now() * 0.001) * 0.3
+      
+      // Update boss position globally for collision
+      window.bossData = {
+        position: [BOSS_POSITION[0], meshRef.current.position.y, BOSS_POSITION[2]],
+        size: BOSS_SIZE
+      }
     }
   })
 
+  // Don't render if boss is defeated
+  if (bossDefeated) return null
+
   return (
     <group position={BOSS_POSITION}>
-      {/* Boss body */}
+      {/* Boss body - 2D plane */}
       <mesh ref={meshRef} castShadow>
-        <boxGeometry args={[BOSS_SIZE, BOSS_SIZE, BOSS_SIZE]} />
+        <planeGeometry args={[BOSS_SIZE, BOSS_SIZE]} />
         <meshStandardMaterial 
           color={bossColor}
           emissive={bossColor}
           emissiveIntensity={0.3}
+          side={2}
         />
       </mesh>
       
       {/* Boss eyes */}
-      <mesh position={[-0.3, 0.3, BOSS_SIZE / 2 + 0.01]}>
-        <sphereGeometry args={[0.15, 8, 8]} />
+      <mesh position={[-0.3, 0.3, 0.01]}>
+        <circleGeometry args={[0.15, 16]} />
         <meshStandardMaterial color="#FF0000" emissive="#FF0000" emissiveIntensity={1} />
       </mesh>
-      <mesh position={[0.3, 0.3, BOSS_SIZE / 2 + 0.01]}>
-        <sphereGeometry args={[0.15, 8, 8]} />
+      <mesh position={[0.3, 0.3, 0.01]}>
+        <circleGeometry args={[0.15, 16]} />
         <meshStandardMaterial color="#FF0000" emissive="#FF0000" emissiveIntensity={1} />
       </mesh>
 
-      {/* Crown/horns */}
-      <mesh position={[0, BOSS_SIZE / 2 + 0.3, 0]}>
-        <coneGeometry args={[0.4, 0.8, 4]} />
+      {/* Crown/horns - 2D triangle */}
+      <mesh position={[0, BOSS_SIZE / 2 + 0.3, 0.01]}>
+        <coneGeometry args={[0.4, 0.8, 3]} />
         <meshStandardMaterial color="#FFD700" />
+      </mesh>
+      
+      {/* Mouth */}
+      <mesh position={[0, -0.2, 0.01]}>
+        <planeGeometry args={[0.4, 0.1]} />
+        <meshStandardMaterial color="#000000" />
       </mesh>
     </group>
   )

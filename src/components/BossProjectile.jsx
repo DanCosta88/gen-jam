@@ -38,11 +38,12 @@ function BossProjectile({ id, position, direction }) {
 
   return (
     <mesh ref={meshRef} position={position}>
-      <sphereGeometry args={[0.25, 8, 8]} />
+      <circleGeometry args={[0.25, 16]} />
       <meshStandardMaterial 
         color="#FF0000" 
         emissive="#FF4500" 
         emissiveIntensity={0.8}
+        side={2}
       />
     </mesh>
   )

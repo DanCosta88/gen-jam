@@ -128,6 +128,16 @@ canvas {
   background: #45a049;
 }
 
+.game-over.victory {
+  background: rgba(0, 150, 0, 0.9);
+  border: 4px solid #FFD700;
+}
+
+.game-over.victory h1 {
+  color: #FFD700;
+  font-size: 56px;
+}
+
 .game-over-buttons {
   display: flex;
   gap: 15px;
@@ -301,6 +311,55 @@ canvas {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
 }
 
+/* Boss HUD */
+.boss-hud {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.boss-label {
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  background: rgba(139, 0, 139, 0.7);
+  padding: 8px 15px;
+  border-radius: 5px;
+  border: 2px solid white;
+}
+
+.boss-health {
+  display: flex;
+  gap: 5px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: 2px solid white;
+}
+
+.boss-heart {
+  font-size: 24px;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.boss-heart.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.boss-heart.inactive {
+  opacity: 0.3;
+  transform: scale(0.8);
+  filter: grayscale(1) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
 /* Pause Menu Styles */
 .pause-menu-overlay {
   position: absolute;
@@ -380,6 +439,129 @@ canvas {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
+/* Visual Novel Dialog Styles */
+.visual-novel-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 600;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.vn-character-container {
+  width: 80%;
+  max-width: 900px;
+  height: 55%;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.vn-character-frame {
+  width: 100%;
+  height: 100%;
+  border: 8px solid rgba(255, 255, 255, 0.8);
+  background: linear-gradient(135deg, #6B8DD6 0%, #8E9EAB 100%);
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.vn-character-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vn-character-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+}
+
+.vn-character-emoji {
+  font-size: 200px;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+}
+
+.vn-dialog-container {
+  width: 90%;
+  max-width: 1200px;
+}
+
+.vn-dialog-box {
+  background: rgba(30, 30, 30, 0.95);
+  border: 4px solid rgba(255, 255, 255, 0.9);
+  padding: 30px 40px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+  position: relative;
+}
+
+.vn-name-box {
+  position: absolute;
+  top: -25px;
+  left: 40px;
+  background: rgba(30, 30, 30, 0.95);
+  border: 4px solid rgba(255, 255, 255, 0.9);
+  border-bottom: none;
+  padding: 8px 30px;
+}
+
+.vn-name-text {
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 1px;
+}
+
+.vn-dialog-text {
+  color: white;
+  font-size: 22px;
+  line-height: 1.6;
+  font-family: 'Georgia', serif;
+  min-height: 80px;
+  margin-top: 10px;
+}
+
+.vn-dialog-text p {
+  margin: 0;
+}
+
+.vn-continue-indicator {
+  position: absolute;
+  bottom: 15px;
+  right: 25px;
+}
+
+.vn-hexagon {
+  color: rgba(255, 200, 100, 0.9);
+  font-size: 20px;
+}
+
+.vn-hint {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  font-style: italic;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .selection-title {
@@ -426,6 +608,22 @@ canvas {
   .pause-button {
     font-size: 18px;
     padding: 16px 30px;
+  }
+  
+  .vn-character-emoji {
+    font-size: 120px;
+  }
+  
+  .vn-dialog-text {
+    font-size: 18px;
+  }
+  
+  .vn-dialog-box {
+    padding: 20px 25px;
+  }
+  
+  .vn-name-text {
+    font-size: 16px;
   }
 }
 

@@ -7,7 +7,7 @@ const BULLET_LIFETIME = 3000 // 3 seconds
 
 function Bullet({ id, position, direction }) {
   const meshRef = useRef()
-  const { removeBullet } = useGame()
+  const { removeBullet, damageBoss, bossDefeated } = useGame()
   const spawnTime = useRef(Date.now())
 
   useFrame(() => {
@@ -15,6 +15,29 @@ function Bullet({ id, position, direction }) {
 
     // Bullet movement
     meshRef.current.position.x += direction * BULLET_SPEED
+
+    // Check collision with boss
+    if (!bossDefeated && window.bossData) {
+      const boss = window.bossData
+      const [bossX, bossY, bossZ] = boss.position
+      const bossSize = boss.size
+      
+      const bulletX = meshRef.current.position.x
+      const bulletY = meshRef.current.position.y
+      const bulletZ = meshRef.current.position.z
+      
+      // Simple AABB collision for 2D
+      if (
+        bulletX > bossX - bossSize / 2 &&
+        bulletX < bossX + bossSize / 2 &&
+        bulletY > bossY - bossSize / 2 &&
+        bulletY < bossY + bossSize / 2
+      ) {
+        damageBoss()
+        removeBullet(id)
+        return
+      }
+    }
 
     // Remove bullet if out of bounds or lifetime expired
     if (
@@ -27,11 +50,12 @@ function Bullet({ id, position, direction }) {
 
   return (
     <mesh ref={meshRef} position={position}>
-      <sphereGeometry args={[0.2, 8, 8]} />
+      <circleGeometry args={[0.2, 16]} />
       <meshStandardMaterial 
         color="#FFFF00" 
         emissive="#FFFF00" 
         emissiveIntensity={0.5}
+        side={2}
       />
     </mesh>
   )
