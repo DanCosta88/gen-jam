@@ -1,14 +1,33 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { Text } from '@react-three/drei'
 import { useGame } from '../store/useGame'
 
-const BULLET_SPEED = 0.5
-const BULLET_LIFETIME = 3000 // 3 seconds
+const BULLET_SPEED = 0.08  // Extremely slow projectiles
+const BULLET_LIFETIME = 8000 // 8 seconds (increased for very slow bullets)
+
+// Startup founder phrases
+const FOUNDER_PHRASES = [
+  "Show me the money!",
+  "Disrupt!",
+  "Scale!",
+  "Pivot!",
+  "MVP",
+  "Growth!",
+  "10x",
+  "Ship it!",
+  "Move fast",
+  "Unicorn!",
+  "Innovate!",
+  "Fail fast",
+  "Hustle!"
+]
 
 function Bullet({ id, position, direction }) {
   const meshRef = useRef()
   const { removeBullet, damageBoss, bossDefeated } = useGame()
   const spawnTime = useRef(Date.now())
+  const phrase = useRef(FOUNDER_PHRASES[Math.floor(Math.random() * FOUNDER_PHRASES.length)])
 
   useFrame(() => {
     if (!meshRef.current) return
@@ -49,15 +68,19 @@ function Bullet({ id, position, direction }) {
   })
 
   return (
-    <mesh ref={meshRef} position={position}>
-      <circleGeometry args={[0.2, 16]} />
-      <meshStandardMaterial 
-        color="#FFFF00" 
-        emissive="#FFFF00" 
-        emissiveIntensity={0.5}
-        side={2}
-      />
-    </mesh>
+    <group ref={meshRef} position={position}>
+      <Text
+        fontSize={0.35}
+        color="#FFFF00"
+        anchorX="center"
+        anchorY="middle"
+        outlineWidth={0.03}
+        outlineColor="#000000"
+        fontWeight="bold"
+      >
+        {phrase.current}
+      </Text>
+    </group>
   )
 }
 

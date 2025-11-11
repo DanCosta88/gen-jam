@@ -76,7 +76,7 @@ function World() {
       {/* Boss Health (top right) */}
       {!bossDefeated && (
         <div className="boss-hud">
-          <div className="boss-label">👾 BOSS</div>
+          <div className="boss-label">💼 INVESTOR</div>
           <div className="boss-health">
             {[...Array(bossMaxHealth)].map((_, i) => (
               <span 
@@ -114,7 +114,7 @@ function World() {
       {bossDefeated && (
         <div className="game-over victory">
           <h1>🏆 Victory! 🏆</h1>
-          <p>You defeated the boss!</p>
+          <p>You convinced the investor!</p>
           <p>Character: {selectedCharacter.name}</p>
           <p>Final Score: {score}</p>
           <div className="game-over-buttons">

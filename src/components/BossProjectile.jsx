@@ -1,14 +1,33 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { Text } from '@react-three/drei'
 import { useGame } from '../store/useGame'
 
 const PROJECTILE_SPEED = 0.3
 const PROJECTILE_LIFETIME = 5000 // 5 seconds
 
+// Investor rejection phrases
+const INVESTOR_PHRASES = [
+  "I don't like your idea",
+  "No market fit",
+  "Too risky",
+  "Not scalable",
+  "Poor traction",
+  "No moat",
+  "Overvalued",
+  "Bad unit economics",
+  "Saturated market",
+  "Weak team",
+  "No differentiation",
+  "Burn rate too high",
+  "Pass"
+]
+
 function BossProjectile({ id, position, direction }) {
   const meshRef = useRef()
   const { removeBossProjectile } = useGame()
   const spawnTime = useRef(Date.now())
+  const phrase = useRef(INVESTOR_PHRASES[Math.floor(Math.random() * INVESTOR_PHRASES.length)])
 
   useFrame(() => {
     if (!meshRef.current) return
@@ -37,15 +56,19 @@ function BossProjectile({ id, position, direction }) {
   })
 
   return (
-    <mesh ref={meshRef} position={position}>
-      <circleGeometry args={[0.25, 16]} />
-      <meshStandardMaterial 
-        color="#FF0000" 
-        emissive="#FF4500" 
-        emissiveIntensity={0.8}
-        side={2}
-      />
-    </mesh>
+    <group ref={meshRef} position={position}>
+      <Text
+        fontSize={0.4}
+        color="#FF0000"
+        anchorX="center"
+        anchorY="middle"
+        outlineWidth={0.04}
+        outlineColor="#000000"
+        fontWeight="bold"
+      >
+        {phrase.current}
+      </Text>
+    </group>
   )
 }
 

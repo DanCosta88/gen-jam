@@ -15,6 +15,9 @@ function Game() {
     <Canvas
       shadows
       camera={{ position: [0, 5, 15], fov: 60 }}
+      frameloop="always"
+      dpr={[1, 2]}
+      gl={{ antialias: true, alpha: false }}
     >
       {/* Lighting */}
       <ambientLight intensity={0.6} />

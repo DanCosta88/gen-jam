@@ -1,4 +1,5 @@
 import React from 'react'
+import SanFranciscoBackground from './SanFranciscoBackground'
 
 // Pre-generate cloud positions to avoid random changes on re-render
 const CLOUD_POSITIONS = [
@@ -10,32 +11,14 @@ const CLOUD_POSITIONS = [
 function Background() {
   return (
     <group>
-      {/* Sky gradient background */}
-      <mesh position={[0, 10, -10]}>
-        <planeGeometry args={[200, 40]} />
+      {/* San Francisco Skyline */}
+      <SanFranciscoBackground />
+      {/* Sky gradient background - moved even further back */}
+      <mesh position={[50, 15, -30]}>
+        <planeGeometry args={[300, 60]} />
         <meshBasicMaterial 
           color="#87CEEB"
-          transparent
-          opacity={0.9}
         />
-      </mesh>
-
-      {/* Mountains in the back */}
-      <mesh position={[-20, 5, -8]}>
-        <coneGeometry args={[5, 10, 4]} />
-        <meshBasicMaterial color="#8B7355" />
-      </mesh>
-      <mesh position={[0, 6, -8]}>
-        <coneGeometry args={[6, 12, 4]} />
-        <meshBasicMaterial color="#A0826D" />
-      </mesh>
-      <mesh position={[20, 5, -8]}>
-        <coneGeometry args={[5, 10, 4]} />
-        <meshBasicMaterial color="#8B7355" />
-      </mesh>
-      <mesh position={[40, 6, -8]}>
-        <coneGeometry args={[6, 12, 4]} />
-        <meshBasicMaterial color="#A0826D" />
       </mesh>
 
       {/* Clouds */}
